@@ -35,6 +35,9 @@ static void xfree(void *ptr)
 
 static struct elem *init_list(size_t len)
 {
+	if (len < 1) {
+		panic("Length must be >=1!\n");
+	}
 	// Set up first element
 	struct elem* head = (struct elem*) xmalloc(sizeof(struct elem));
 	(*head).pos = 0;
