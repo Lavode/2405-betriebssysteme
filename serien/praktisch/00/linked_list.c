@@ -35,17 +35,56 @@ static void xfree(void *ptr)
 
 static struct elem *init_list(size_t len)
 {
-	/* ... */
+	// Set up first element
+	struct elem* head = (struct elem*) xmalloc(sizeof(struct elem));
+	(*head).pos = 0;
+	(*head).next = NULL;
+
+	// We'll keep `head` around to return, but need a floating reference to
+	// the previous item, too.
+	struct elem* prev = head;
+
+	// Starting at 1, as we already have one (namely head).
+	for (int i = 1; i < len; i++) {
+		struct elem* cur = xmalloc(sizeof(struct elem));
+		(*cur).pos = i;
+		(*cur).next = NULL;
+		(*prev).next = cur;
+
+		prev = cur;
+	}
+
+	// Link last item back to first
+	(*prev).next = head;
+
+	return head;
 }
 
 static void clean_list(struct elem *head, size_t len)
 {
-	/* ... */
+	struct elem* cur = head;
+	for (int i = 0; i < len; i++) {
+		struct elem* next = cur->next;
+		xfree(cur);
+		cur = next;
+	}
 }
 
 static void traverse_list(struct elem *head, int times)
 {
-	/* ... */
+	int startIndex = head->pos;
+
+	struct elem* cur = head;
+	int iteration = 1;
+
+	while (times > 0) {
+		printf("[%i] -> %i\n", iteration, cur->pos);
+		cur = cur->next;
+		if (startIndex == cur->pos) {
+			times--;
+		}
+		iteration++;
+	}
 }
 
 int main(void)
@@ -53,7 +92,9 @@ int main(void)
 	struct elem *head = NULL;
 	size_t len = 10;
 
-	/* ... */
+	head = init_list(len);
+	traverse_list(head, 2);
+	clean_list(head, len);
 
 	return 0;
 }
