@@ -9,10 +9,11 @@ int main(int argc, char *argv[]) {
 		exit(2);
 	}
 
-	char *ptr;
-
-	int arg1 = strtol(argv[1], ptr, 10);
-	int arg2 = strtol(argv[2], ptr, 10);
+	char *bin;
+	// We'll just discard the rest. Could check if it isn't empty and raise
+	// an error if so.
+	int arg1 = strtol(argv[1], bin, 10);
+	int arg2 = strtol(argv[2], bin, 10);
 
 	printf("%i * %i = %i\n", arg1, arg2, arg1 * arg2);
 }
