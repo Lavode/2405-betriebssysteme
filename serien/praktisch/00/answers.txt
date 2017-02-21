@@ -1,0 +1,13 @@
+Serie 0
+
+2.3: Why to use `off_t` / `size_t` as opposed to an (unsigned) int
+
+`off_t` and `size_t` are used to declare that something is the size of a file or object respectively. As no object or file can have a negative size, either of these values are unsigned integers.
+The range of these types is guaranteed to encompass the maximum object/file size supported by the host - unlike a plain unsigned int, which may be bigger or smaller, depending on the host.
+In addition `off_t` and `size_t` carry a semantic meaning, giving a reader a more direct hint of what a variable is used for.
+
+2.6: 'Speicherfehler'
+
+The `f` function will return a pointer to a *local* variable - which is to say a variable which only lives within the scope of that function. Trying to access that variable after the function has terminated will result in failure.
+
+The most sensible way to fix this is to have the function return the value of the calculated integer, rather than a pointer.
