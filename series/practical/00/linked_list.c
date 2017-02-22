@@ -40,8 +40,8 @@ static struct elem *init_list(size_t len)
 	}
 	// Set up first element
 	struct elem* head = (struct elem*) xmalloc(sizeof(struct elem));
-	(*head).pos = 0;
-	(*head).next = NULL;
+	head->pos = 0;
+	head->next = NULL;
 
 	// We'll keep `head` around to return, but need a floating reference to
 	// the previous item, too.
@@ -50,9 +50,9 @@ static struct elem *init_list(size_t len)
 	// Starting at 1, as we already have one (namely head).
 	for (int i = 1; i < len; i++) {
 		struct elem* cur = xmalloc(sizeof(struct elem));
-		(*cur).pos = i;
-		(*cur).next = NULL;
-		(*prev).next = cur;
+		cur->pos = i;
+		cur->next = NULL;
+		prev->next = cur;
 
 		prev = cur;
 	}
