@@ -9,7 +9,9 @@ int main(void)
 	uint8_t sub[] = {255, 255, 240,   0};
 	uint8_t net[4];
 
-	for (int i = 0; i <= sizeof(net) - 1; i++) {
+	int i;
+
+	for (i = 0; i <= sizeof(net) - 1; i++) {
 		net[i] = add[i] & sub[i];
 	}
 

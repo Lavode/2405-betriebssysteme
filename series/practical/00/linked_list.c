@@ -35,20 +35,25 @@ static void xfree(void *ptr)
 
 static struct elem *init_list(size_t len)
 {
+	struct elem* head;
+	struct elem* prev;
+
+	int i;
+
 	if (len < 1) {
 		panic("Length must be >=1!\n");
 	}
-	// Set up first element
-	struct elem* head = (struct elem*) xmalloc(sizeof(struct elem));
+	/* Set up first element */
+	head = (struct elem*) xmalloc(sizeof(struct elem));
 	head->pos = 0;
 	head->next = NULL;
 
-	// We'll keep `head` around to return, but need a floating reference to
-	// the previous item, too.
-	struct elem* prev = head;
+	/* We'll keep `head` around to return, but need a floating reference to
+	the previous item, too. */
+	prev = head;
 
-	// Starting at 1, as we already have one (namely head).
-	for (int i = 1; i < len; i++) {
+	/* Starting at 1, as we already have one (namely head). */
+	for (i = 1; i < len; i++) {
 		struct elem* cur = xmalloc(sizeof(struct elem));
 		cur->pos = i;
 		cur->next = NULL;
@@ -57,7 +62,7 @@ static struct elem *init_list(size_t len)
 		prev = cur;
 	}
 
-	// Link last item back to first
+	/* Link last item back to first */
 	(*prev).next = head;
 
 	return head;
@@ -66,7 +71,10 @@ static struct elem *init_list(size_t len)
 static void clean_list(struct elem *head, size_t len)
 {
 	struct elem* cur = head;
-	for (int i = 0; i < len; i++) {
+
+	int i;
+
+	for (i = 0; i < len; i++) {
 		struct elem* next = cur->next;
 		xfree(cur);
 		cur = next;
