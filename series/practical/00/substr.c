@@ -35,11 +35,12 @@ static char *substring(const char *str, off_t pos, size_t len)
 		panic("Substring exceeds string length!");
 	}
 
-	out = xmalloc(len);
+	/* One additional byte needed for 0 separator */
+	out = xmalloc(len + 1);
 	/* `str` is pointer to *beginning* of char array, so we can add `pos`
 	 * to offset it by n bytes. */
 	strncpy(out, str + pos, len);
-	out[len + 1] = '\0';
+	out[len] = (char)0;
 	return out;
 }
 
@@ -48,5 +49,7 @@ int main(int argc, char **argv)
 	char *foo = "Nicht\n";
 	char *bar = substring(foo, 2, 3);
 	printf("%s", bar);
+	free(bar);
+
 	return 0;
 }
