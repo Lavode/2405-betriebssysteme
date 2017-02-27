@@ -7,7 +7,7 @@
 int main(int argc, char *argv[]) {
 	uint8_t num0;
 	uint8_t num1;
-	uint8_t sum;
+	uint8_t product;
 
 	char *bin;
 
@@ -21,9 +21,9 @@ int main(int argc, char *argv[]) {
 	   an error if so. */
 	num0 = strtol(argv[1], &bin, 10);
 	num1 = strtol(argv[2], &bin, 10);
-	sum = num0 + num1;
+	product = num0 * num1;
 
-	printf("%u * %u = %u\n", num0, num1, sum);
+	printf("%u * %u = %u\n", num0, num1, product);
 
 	return 0;
 }
