@@ -25,10 +25,12 @@ static char *substring(const char *str, off_t pos, size_t len)
 {
 	char *out;
 
-	/* pos and len are *unsigned* ints, so we needn't check whether they
-	 * are negative. */
-	if (pos == 0) {
-		panic("Position must be >= 0!");
+	/* pos and len are *unsigned*, so there's no need for checks whether
+	 * they're negative. In addition, position 0 is a valid input, so we
+	 * only check that length is > 0, as well as that we won't exceed the
+	 * string's bounds. */
+	if (len == 0) {
+		panic("Length must be > 0!");
 	} else if (pos + len > strlen(str)) {
 		panic("Substring exceeds string length!");
 	}
