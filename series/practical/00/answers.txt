@@ -8,6 +8,6 @@ In addition `off_t` and `size_t` carry a semantic meaning, giving a reader a mor
 
 2.6: 'Speicherfehler'
 
-The `f` function will return a pointer to a *local* variable - which is to say a variable which only lives within the scope of that function. Trying to access that variable after the function has terminated will result in failure.
+The `f` function will return a pointer to a *local* variable - which is to say a variable which only lives within the scope of that function. Trying to access that variable after the function has terminated will result in failure, or undefined behaviour. In my case it lead to a segfault.
 
 The most sensible way to fix this is to have the function return the value of the calculated integer, rather than a pointer.
