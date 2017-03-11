@@ -67,6 +67,11 @@ void *maximum(void *val) {
 	return NULL;
 }
 
+void usage() {
+	printf("Usage: ./statistics <number> <number> [number, ...]\n");
+	exit(2);
+}
+
 int main(int argc, char *argv[])
 {
 	// int *array; // use this to store the command line parameters as integers
@@ -79,15 +84,15 @@ int main(int argc, char *argv[])
 	pthread_t thread2;
 
 	if (argc < 3) {
-		printf("You have to supply at least 2 integers as arguments!\n");
-		return 0;
+		usage();
 	}
 
-	int index = 0;
+	char chr;
 	for (int i = 1; i < argc; i++) {
-		char *bin;
-		cliArgs[index] = (int)strtol(argv[i], &bin, 10);
-		index++;
+		/* Not sure what the magic 'c' there captures. \0 as string terminator? */
+		if (sscanf(argv[i], "%d%c", &cliArgs[i - 1], &chr) != 1) {
+			usage();
+		};
 	}
 
 	len = sizeof(cliArgs) / sizeof(cliArgs[0]);
