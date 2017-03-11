@@ -17,11 +17,11 @@ int len;
 struct WorkerData {
 	/* Pointer to first element of integer array which to use as input for
 	 * functions. */
-	int*   input;
+	int* input;
 	/* Pointer to where result of minimum function should be stored. */
-	int*   min;
+	int* min;
 	/* Pointer to where result of maximum function should be stored. */
-	int*   max;
+	int* max;
 	/* Pointer to where result of average function should be stored. */
 	float* avg;
 };
@@ -74,10 +74,11 @@ void usage() {
 
 int main(int argc, char *argv[])
 {
-	// int *array; // use this to store the command line parameters as integers
-
-	/* At most argc - 1 items, if all arguments are valid. */
-	int cliArgs[argc - 1];
+	/* As we bail out on invalid input, rather than ignoring it, the number
+	 * of parameters is ensured to be argc - 1 - all arguments except
+	 * argv[0] which is the executable's name. */
+	len = argc - 1;
+	int cliArgs[len];
 
 	pthread_t thread0;
 	pthread_t thread1;
@@ -94,9 +95,6 @@ int main(int argc, char *argv[])
 			usage();
 		};
 	}
-
-	len = sizeof(cliArgs) / sizeof(cliArgs[0]);
-	printf("Numbers contains %i items\n", len);
 
 	struct WorkerData data;
 	data.min = &min;
