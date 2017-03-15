@@ -31,7 +31,7 @@ int decrease_count(int count) {
 /* increase available resources by count */
 int increase_count(int count) {
 	/* TODO: Adjust to omit race condition */
-	if (count + available_resources > 5) {
+	if (count + available_resources > MAX_RESOURCES) {
 		return -1;
 	} else {
 		available_resources += count;
@@ -59,9 +59,11 @@ int main(int argc, char *argv[])
 
 	decrease_count(2);
 
-	/* TODO: Create 2 threads that call runTimes and wait for their completion
-	 * This should generate false final count of resources every now and then
-	 * when run WITHOUT mutex or semaphore. */
+	pthread_create(&thread0, NULL, runTimes, NULL);
+	pthread_create(&thread1, NULL, runTimes, NULL);
+
+	pthread_join(thread0, NULL);
+	pthread_join(thread1, NULL);
 
 	printf("Currently available resources (should be 3): %i\n" , available_resources);
 
