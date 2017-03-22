@@ -1,0 +1,31 @@
+The affected variable is `available_resources` which, during operation, can
+deviate from what they should be - leading to incorrect tracking of available
+resources.
+
+The reason for these race conditions are those lines, where
+`available_resources` is in- respectively decremented. To understand this, let
+us look at this instruction: available_resources += count;
+In machine code, this instruction will roughly translate to:
+- Load value of `available_resources` into register
+- Load value of `count` into register
+- Add both registers
+- Write result of addition back to `available_resources`
+
+With two threads running in parallel, we can now end up with the following -
+where `*****` represents a switch between threads. `available_resources` is
+assumed to start with value 3, whereas `count` will always be 1.
+
+- T1: Load `available_resources` into register: Register contains value 3
+- T1: Load `count` into register
+- T1: Add both registers. Sum: 4
+- *****
+- T2: Load `available_resources` into register: Register contains value 3
+- T2: Load `count` into register
+- T2: Add both registers. Sum: 4
+- *****
+- T1: Write sum to `available_resources`: Variable contains value 4
+- *****
+- T2: Write sum to `available_resources`: Variable contains value 4
+
+Evidently we then end up with a value `4` instead of the expected value of `5`
+in the variable.
