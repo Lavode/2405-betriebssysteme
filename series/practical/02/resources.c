@@ -10,19 +10,19 @@
 
 int available_resources = MAX_RESOURCES;
 int times = 100000;
-pthread_mutex_t mutex;
-sem_t semaphore; //you may change this to sem_t *semaphore; if more convenient
+sem_t semaphore;
 
 
 /* decrease available_resources by count resources
  * return 0 if sufficient resources available,
  * otherwise return -1 */
 int decrease_count(int count) {
-	/* TODO: Adjust to omit race condition */
 	if (available_resources < count) {
 		return -1;
 	} else {
+		sem_wait(&semaphore);
 		available_resources -= count;
+		sem_post(&semaphore);
 		printf("Locked %i resources, now available: %i\n" , count , available_resources);
 		return 0;
 	}
@@ -30,11 +30,12 @@ int decrease_count(int count) {
 
 /* increase available resources by count */
 int increase_count(int count) {
-	/* TODO: Adjust to omit race condition */
 	if (count + available_resources > MAX_RESOURCES) {
 		return -1;
 	} else {
+		sem_wait(&semaphore);
 		available_resources += count;
+		sem_post(&semaphore);
 		printf("Freed %i resources, now available: %i\n" , count , available_resources);
 		return 0;
 	}
@@ -57,6 +58,8 @@ int main(int argc, char *argv[])
 {
 	pthread_t thread1 , thread0;
 
+	sem_init(&semaphore, 0, 1);
+
 	decrease_count(2);
 
 	pthread_create(&thread0, NULL, runTimes, NULL);
@@ -66,6 +69,8 @@ int main(int argc, char *argv[])
 	pthread_join(thread1, NULL);
 
 	printf("Currently available resources (should be 3): %i\n" , available_resources);
+
+	sem_destroy(&semaphore);
 
 	return 0;
 }
