@@ -20,10 +20,21 @@ int decrease_count(int count) {
 	if (available_resources < count) {
 		return -1;
 	} else {
-		sem_wait(&semaphore);
+		int res = sem_wait(&semaphore);
+		if (res == -1) {
+			perror("Error while locking semaphore");
+			exit(1);
+		}
+
 		available_resources -= count;
+
+		res = sem_post(&semaphore);
+		if (res == -1) {
+			perror("Error while unlocking semaphore");
+			exit(1);
+		}
+
 		printf("Locked %i resources, now available: %i\n" , count , available_resources);
-		sem_post(&semaphore);
 		return 0;
 	}
 }
@@ -33,9 +44,20 @@ int increase_count(int count) {
 	if (count + available_resources > MAX_RESOURCES) {
 		return -1;
 	} else {
-		sem_wait(&semaphore);
+		int res = sem_wait(&semaphore);
+		if (res == -1) {
+			perror("Error while locking semaphore");
+			exit(1);
+		}
+
 		available_resources += count;
-		sem_post(&semaphore);
+
+		res = sem_post(&semaphore);
+		if (res == -1) {
+			perror("Error while unlocking semaphore");
+			exit(1);
+		}
+
 		printf("Freed %i resources, now available: %i\n" , count , available_resources);
 		return 0;
 	}
