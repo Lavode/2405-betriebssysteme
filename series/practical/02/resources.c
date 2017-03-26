@@ -22,8 +22,8 @@ int decrease_count(int count) {
 	} else {
 		sem_wait(&semaphore);
 		available_resources -= count;
-		sem_post(&semaphore);
 		printf("Locked %i resources, now available: %i\n" , count , available_resources);
+		sem_post(&semaphore);
 		return 0;
 	}
 }
@@ -58,7 +58,11 @@ int main(int argc, char *argv[])
 {
 	pthread_t thread1 , thread0;
 
-	sem_init(&semaphore, 0, 1);
+	int res = sem_init(&semaphore, 0, 1);
+	if (res == -1) {
+		perror("Error while creating semaphore");
+		exit(1);
+	}
 
 	decrease_count(2);
 
