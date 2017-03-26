@@ -46,9 +46,9 @@ int decrease_count(int count) {
 	} else {
 		sem_wait_safe();
 		available_resources -= count;
+		printf("Locked %i resources, now available: %i\n" , count , available_resources);
 		sem_post_safe();
 
-		printf("Locked %i resources, now available: %i\n" , count , available_resources);
 		return 0;
 	}
 }
@@ -60,9 +60,9 @@ int increase_count(int count) {
 	} else {
 		sem_wait_safe();
 		available_resources += count;
+		printf("Freed %i resources, now available: %i\n" , count , available_resources);
 		sem_post_safe();
 
-		printf("Freed %i resources, now available: %i\n" , count , available_resources);
 		return 0;
 	}
 }
