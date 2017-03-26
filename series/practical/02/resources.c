@@ -12,6 +12,30 @@ int available_resources = MAX_RESOURCES;
 int times = 100000;
 sem_t semaphore;
 
+void sem_init_safe() {
+	int res = sem_init(&semaphore, 0, 1);
+	if (res == -1) {
+		perror("Error while creating semaphore");
+		exit(1);
+	}
+}
+
+void sem_wait_safe() {
+	int res = sem_wait(&semaphore);
+	if (res == -1) {
+		perror("Error while locking semaphore");
+		exit(1);
+	}
+}
+
+void sem_post_safe() {
+	int res = sem_post(&semaphore);
+	if (res == -1) {
+		perror("Error while unlocking semaphore");
+		exit(1);
+	}
+
+}
 
 /* decrease available_resources by count resources
  * return 0 if sufficient resources available,
@@ -20,19 +44,9 @@ int decrease_count(int count) {
 	if (available_resources < count) {
 		return -1;
 	} else {
-		int res = sem_wait(&semaphore);
-		if (res == -1) {
-			perror("Error while locking semaphore");
-			exit(1);
-		}
-
+		sem_wait_safe();
 		available_resources -= count;
-
-		res = sem_post(&semaphore);
-		if (res == -1) {
-			perror("Error while unlocking semaphore");
-			exit(1);
-		}
+		sem_post_safe();
 
 		printf("Locked %i resources, now available: %i\n" , count , available_resources);
 		return 0;
@@ -44,19 +58,9 @@ int increase_count(int count) {
 	if (count + available_resources > MAX_RESOURCES) {
 		return -1;
 	} else {
-		int res = sem_wait(&semaphore);
-		if (res == -1) {
-			perror("Error while locking semaphore");
-			exit(1);
-		}
-
+		sem_wait_safe();
 		available_resources += count;
-
-		res = sem_post(&semaphore);
-		if (res == -1) {
-			perror("Error while unlocking semaphore");
-			exit(1);
-		}
+		sem_post_safe();
 
 		printf("Freed %i resources, now available: %i\n" , count , available_resources);
 		return 0;
@@ -80,11 +84,7 @@ int main(int argc, char *argv[])
 {
 	pthread_t thread1 , thread0;
 
-	int res = sem_init(&semaphore, 0, 1);
-	if (res == -1) {
-		perror("Error while creating semaphore");
-		exit(1);
-	}
+	sem_init_safe();
 
 	decrease_count(2);
 
