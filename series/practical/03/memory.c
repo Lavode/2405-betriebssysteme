@@ -2,41 +2,56 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+#include <stdint.h>
 
-/* TODO: Insert System Type here
- * System used: e.g. Linux MyDistro 32bit x86
+/* 
+ * System used: Arch Linux, 64bit, x86
+ * Linux loisoh 4.10.6-1-ARCH #1 SMP PREEMPT Mon Mar 27 08:28:22 CEST 2017 x86_64 GNU/Linux
  */
 
-int calculate_page (/* TODO: Insert correct data type */ address) {
-	/* TODO: Implement */
+#define PAGE_SIZE 4096;
+
+/*
+ * Calculate virtual page of virtual address.
+ */
+int calculate_page (int32_t address) {
+	return address / PAGE_SIZE;
 }
 
-int calculate_offset (/* TODO: Insert correct data type */ address , int page) {
-	/* TODO: Implement */
+/*
+ * Calculate page offset of virtual address.
+ */
+int calculate_offset (int32_t address) {
+	return address % PAGE_SIZE;
 }
 
 int main(int argc, char *argv[])
 {
 	long long_input;
-	/* TODO: Insert correct data type */ address;
-	int offset , page;
+	int32_t address;
+	int offset, page;
 
 	if (argc != 2) {
 		printf("You must provide a parameter as input!\n");
 		return -1;
 	} else {
 		long_input = atol(argv[1]);
-		long supremum = pow(2 , 8*sizeof(/* TODO: Insert correct data type */));
+		/* sizeof returns size in bytes, hence *8. */
+		long supremum = pow(2 , 8 * sizeof(int32_t));
 		if (long_input < 0 || long_input >= supremum) {
 			printf("You must enter a valid 32bit address as parameter!\n");
 			return -1;
 		} else {
-			address = (/* TODO: Insert correct data type */) long_input;
+			address = (int32_t) long_input;
 		}
 	}
 
-	/* TODO: calculate values and generate correct output */
+	page = calculate_page(address);
+	offset = calculate_offset(address);
+
+	printf("The address %i contains:\n", address);
+	printf("Page number: %i\n", page);
+	printf("Offset: %i\n", offset);
 
 	return 0;
 }
