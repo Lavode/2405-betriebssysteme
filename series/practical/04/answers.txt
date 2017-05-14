@@ -1,0 +1,43 @@
+a)
+
+`stat file1.txt` - Then check the output for 'Inode: ....'
+
+
+  File: file1.txt
+  Size: 168       	Blocks: 8          IO Block: 4096   regular file
+Device: fe01h/65025d	Inode: 15339393    Links: 1
+Access: (0644/-rw-r--r--)  Uid: ( 1000/ michael)   Gid: ( 1000/ michael)
+Access: 2017-05-13 18:37:25.024249271 +0200
+Modify: 2017-05-13 18:37:25.024249271 +0200
+Change: 2017-05-13 18:37:25.024249271 +0200
+ Birth: -
+
+b)
+
+`ln file1.txt file2.txt`
+
+Both files refer to the same inode - hence they also contain the same data and,
+if you modify one, the change is visible in the other file, too.
+
+c)
+
+As there is still a reference to the inode where the file resides (namely
+'file2.txt'), the contents are still reachable.
+
+The system call responsible for 'deleting' the file is likely
+`unlinkat(AT_FDCWD, "file2.txt", 0)`, which removes the link to the inode,
+which, as its reference counter reaches 0, will then be cleaned up.
+
+d)
+
+`ln -s file3.txt file4.txt`
+
+file4.txt - being a symlink - has its own inode.
+
+e)
+
+file4.txt is a link to file3.txt and - as such - modifying file4.txt modifies
+the underlying data, which is then also visible when accessing file3.txt.
+
+Deleting file3.txt makes file4.txt point at a now-nonexistant inode, so file
+access will fail.
